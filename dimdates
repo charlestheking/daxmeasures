@@ -1,0 +1,38 @@
+let
+    //EndDatelist = List.Max(FactInternetSales[OrderDateKey]),
+    //EndDate=Date.FromText(Text.Insert((Text.Insert(Number.ToText(EndDatelist),4,"/")),7,"/")),
+    EndDate=DateTime.Date(Date.AddDays(List.Max(FactInternetSales[OrderDate]),+2)),
+    Sourceddate = List.Min(FactInternetSales[OrderDateKey]), // fetching minimum fact date//
+    //StartDate=Date.FromText(Text.Insert((Text.Insert(Number.ToText(Sourceddate),4,"/")),7,"/")),/*this converts datekey to date*/
+    StartDate=DateTime.Date(Date.AddDays(List.Min(FactInternetSales[OrderDate]),-2)),
+    //StartDate = Date.AddMonths(EndDate,-25),
+    FYStartMonth= Date.QuarterOfYear(StartDate),
+    DayCount = Duration.Days(Duration.From(EndDate - StartDate)),
+    Source = List.Dates(StartDate,DayCount,#duration(1,0,0,0)),
+    TableFromList = Table.FromList(Source, Splitter.SplitByNothing()),   
+    ChangedType = Table.TransformColumnTypes(TableFromList,{{"Column1", type date}}),
+    RenamedColumns = Table.RenameColumns(ChangedType,{{"Column1", "Date"}}),
+    InsertYear = Table.AddColumn(RenamedColumns, "Year", each Date.Year([Date]),type text),
+    InsertYearNumber = Table.AddColumn(RenamedColumns, "YearNumber", each Date.Year([Date]),Int64.Type),
+    InsertQuarter = Table.AddColumn(InsertYear, "QuarterOfYear", each Date.QuarterOfYear([Date])),
+    InsertMonthNumber = Table.AddColumn(InsertQuarter, "MonthNumber", each Date.Month([Date]), type text),
+    InsertDay = Table.AddColumn(InsertMonthNumber, "DayOfMonth", each Date.Day([Date])),
+    //InsertDayKey = Table.AddColumn(InsertDay, "DateKey", each ((([Year] * 100) + [MonthNumber])*100) + 1,Int64.Type),
+    InsertDayInt = Table.AddColumn(InsertDay, "OrderDateKey", each ((([Year] * 100)+ [MonthNumber]) * 100) + [DayOfMonth],Int64.Type),
+    InsertMonthName = Table.AddColumn(InsertDayInt, "MonthName", each Date.ToText([Date], "MMMM"), type text),
+    InsertCalendarMonth = Table.AddColumn(InsertMonthName, "MonthInCalendar", each (try(Text.Range([MonthName],0,3)) otherwise [MonthName]) & " " & Number.ToText([Year])),
+    InsertCalendarQtr = Table.AddColumn(InsertCalendarMonth, "QuarterInCalendar", each "Q" & Number.ToText([QuarterOfYear]) & " " & Number.ToText([Year])),
+    InsertDayWeek = Table.AddColumn(InsertCalendarQtr, "DayInWeek", each Date.DayOfWeek([Date])),
+    InsertDayName = Table.AddColumn(InsertDayWeek, "DayOfWeekName", each Date.ToText([Date], "dddd"), type text),
+    InsertWeekEnding = Table.AddColumn(InsertDayName, "WeekEnding", each Date.EndOfWeek([Date]), type date),
+    InsertWeekNumber= Table.AddColumn(InsertWeekEnding, "Week Number", each Date.WeekOfYear([Date])),
+    InsertMonthnYear = Table.AddColumn(InsertWeekNumber,"YearMonth", each ([Year] * 100) + ([MonthNumber]),Int64.Type),
+    InsertQuarternYear = Table.AddColumn(InsertMonthnYear,"QuarternYear", each ([Year] * 100) + [QuarterOfYear],Int64.Type),
+    ChangedType1 = Table.TransformColumnTypes(InsertQuarternYear,{{"QuarternYear", Int64.Type},{"Week Number", Int64.Type},{"Year", type text},{"YearMonth", Int64.Type}, {"DayOfMonth", Int64.Type}, {"MonthNumber", Int64.Type}, {"QuarterOfYear", Int64.Type}, {"MonthInCalendar", type text}, {"QuarterInCalendar", type text}, {"DayInWeek", Int64.Type}}),
+    InsertShortYear = Table.AddColumn(ChangedType1, "ShortYear", each Text.End(Text.From([Year]), 2), type text),
+    AddFY = Table.AddColumn(InsertShortYear, "FY", each "FY"&(if [MonthNumber]>=FYStartMonth then Text.From(Number.From([ShortYear])+1) else [ShortYear])),
+    #"Renamed Columns" = Table.RenameColumns(AddFY,{{"Date", "Order Date"}}),
+    #"Filtered Rows" = Table.SelectRows(#"Renamed Columns", each true),
+    #"Sorted Rows" = Table.Sort(#"Filtered Rows",{{"Order Date", Order.Ascending}})
+in
+    #"Sorted Rows"
