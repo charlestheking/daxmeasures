@@ -1,0 +1,42 @@
+-------------------------------Add columns -- does not preserve data lineage----
+ADDCOLUMNS
+---table
+--column to add 
+Eg
+ADDColumns (
+'Customer',
+"total Transact", calculate(countrows(sales)), ----------------------adds total count of customer transactions
+)
+--Generate and row function-----------------generate a table----------
+var custtbl = values(customer[Names])
+return
+    GENERATE 
+    custtble,
+var totaltrans = calculate(countrows(sales)
+var futtrans =totaltans+10
+return 
+ROW (
+"total transact", totaltrans,
+"future trans", futtrans))
+
+-------------------------------------SELECTCOLUMNS---------------select columns iterator-------------
+SLCTcol =
+SELECTCOLUMNs
+    product,
+    "Product name", product[product name],
+    "Product color", product[color]
+    "# of Sales", calculate(countrows(sales)),
+    "sales", [Measure]
+----filters 
+    'customer' [Marital] ="s"
+
+ SELECTCOLUMNS
+    Calculatetable(
+    selectcolumns(
+        product
+    "Product Name", product[name],
+    "Product color", product[Color]
+    "# Of Sales ", calculate(countrows(sales)),
+----------additional filters-------------------
+sales, [totalsalses]
+customer [maritalstatus]="s"
