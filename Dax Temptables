@@ -1,4 +1,26 @@
--------------------------------Add columns -- does not preserve data lineage----
+----------------------------------------------------------------------------------VALUES-----------------------do not use in variables-------------------
+
+3 months rolling average=
+    var startdate = Lastdate(date[date])
+    get a list of months from date table do not use values in variable
+    return
+calculate (
+    averagex(
+        values(date(month),totalsales),
+        datesinperiod(date([date],startdate, -3,MONTH))
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------ADDCOLUMNS--Add columns -- does not preserve data lineage----
 ADDCOLUMNS
 ---table
 --column to add 
@@ -18,8 +40,27 @@ return
 ROW (
 "total transact", totaltrans,
 "future trans", futtrans))
+------------------example
+EVALUATE
+	CALCULATETABLE(
+		ADDCOLUMNS(
+			SUMMARIZE(
+				FactInternetSales,
+				DimShipDate[Year],
+				DimSalesTerritory[SalesTerritoryCountry]
+			),
+			"Total Quantity", [Total Quantity],
+			"Minimum Price", [Min Price]
+		),
+		DimSalesTerritory[SalesTerritoryCountry] = "United States",
+		DimProduct[Color] IN {
+			"Red",
+			"Blue"
+		}
+	)
+	ORDER BY DimShipDate[Year]
 
--------------------------------------SELECTCOLUMNS---------------select columns iterator-------------
+-------------------------------------SELECTCOLUMNS---------------select columns iterator-------------maiontains data lineage
 SLCTcol =
 SELECTCOLUMNs
     product,
@@ -31,12 +72,98 @@ SELECTCOLUMNs
     'customer' [Marital] ="s"
 
  SELECTCOLUMNS
-    Calculatetable(
+  ---allows additional filters
+Calculatetable(
     selectcolumns(
         product
     "Product Name", product[name],
     "Product color", product[Color]
+    "Customer Name", RELATED(Customer[FirstName]),
     "# Of Sales ", calculate(countrows(sales)),
 ----------additional filters-------------------
 sales, [totalsalses]
 customer [maritalstatus]="s"
+------------------------------------------------------summerize------------------------addcol + summerize ------------better use summerizecolumns
+sum
+ SUMMERIZE(
+sales, 
+product[color],
+"Sales" total sales /// not recommmended use summerizecolumns
+
+
+EVALUATE
+	CALCULATETABLE(
+		SUMMARIZE(
+			FactInternetSales,
+			DimShipDate[Year],
+			DimSalesTerritory[SalesTerritoryCountry],
+			"Total Quantity", [Total Quantity],
+			"Minimum Price", [Min Price]
+		),
+		DimSalesTerritory[SalesTerritoryCountry] IN {
+			"United States"
+		},
+		DimProduct[Color] IN {
+			"Red",
+			"Blue"
+		}
+	)
+	ORDER BY DimShipDate[Year]
+
+
+----------------------------------------------------------summerizecolumns-------------------
+---ability to group by --Rollup totals---
+--ability to add columns--like addcol
+--ability to add filters--like calculate table
+---automatically remove row with blanks
+--summerizecolumns will not work if the cntxt translation has occoured-------------------------------------------------------do not use in a measure use addcol + summerize------------------------------------------------------<<<<<<<<<<<<
+    SUMMERIZECOLUMNS 
+    product[class],
+    'date'[year],
+"Amount", IGNORE([Totalsales])---this returns zero values 
+-----------------example
+EVALUATE
+SUMMARIZECOLUMNS(
+	DimShipDate[Year],
+	DimSalesTerritory[SalesTerritoryCountry],
+	FILTER(ALL(DimSalesTerritory[SalesTerritoryCountry]),DimSalesTerritory[SalesTerritoryCountry]="United States"),
+	FILTER(ALL(DimProduct[Color]),DimProduct[Color] IN {"Red","Blue"}),
+	"Total Quantity", [Total Quantity],
+	"Minimum Price",[Min Price]
+)
+ORDER by DimShipDate[Year]
+
+------------------------------------------------------------------------------GROUPCROSSAPLY-------------------
+EVALUATE
+GROUPCROSSAPPLY(
+	DimShipDate[Year],
+	DimSalesTerritory[SalesTerritoryCountry],
+	FILTER(ALL(DimSalesTerritory[SalesTerritoryCountry]),DimSalesTerritory[SalesTerritoryCountry]="United States"),
+	FILTER(ALL(DimProduct[Color]),DimProduct[Color] IN {"Red","Blue"}),
+	VALUES(DimShipDate[Year]),
+	"Total Quantity", [Total Quantity],
+	"Minimum Price",[Min Price]
+)
+ORDER by DimShipDate[Year]
+---------------------------------------------------------------------------GROUPBY---------------------------------------------
+    EVALUATE
+GROUPBY(
+	FILTER(
+		FactInternetSales,
+		RELATED(DimSalesTerritory[SalesTerritoryCountry])="United States"
+		&& RELATED(DimProduct[Color]) in {"Red","Blue"}
+		),
+		DimShipDate[Year],
+		DimSalesTerritory[SalesTerritoryCountry],
+		"Total Quantity", SUMX(CURRENTGROUP(),[OrderQuantity]),
+		"Minimum Price", MINX(CURRENTGROUP(),FactInternetSales[UnitPrice])
+)
+ORDER by DimShipDate[Year]
+		--group by does not support explicit measures 
+
+
+
+
+    
+
+
