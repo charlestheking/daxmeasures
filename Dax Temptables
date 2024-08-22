@@ -111,7 +111,7 @@ EVALUATE
 	ORDER BY DimShipDate[Year]
 
 
-----------------------------------------------------------summerizecolumns-------------------
+----------------------------------------------------------summerizecolumns-------------------< is only for queries and not to be used in a measure---------------------
 ---ability to group by --Rollup totals---
 --ability to add columns--like addcol
 --ability to add filters--like calculate table
