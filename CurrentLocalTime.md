@@ -1,3 +1,4 @@
+## current local time in PQ
 let
   UTC_DateTimeZone = DateTimeZone.UtcNow(), 
   UTC_Date         = Date.From(UTC_DateTimeZone), 
