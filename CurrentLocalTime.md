@@ -1,4 +1,4 @@
-## current local time in PQ
+## PQ_current local time in PQ
 let
   UTC_DateTimeZone = DateTimeZone.UtcNow(), 
   UTC_Date         = Date.From(UTC_DateTimeZone), 
@@ -8,9 +8,20 @@ let
   CET_Timezone     = DateTimeZone.SwitchZone(UTC_DateTimeZone, UTC_Offset)
 in
   CET_Timezone
+  
+## PQ_convert duration in Seconds to HH:MM:SS in PQ
+let
+            totalSeconds = [MS_FLOW_DUR],
+            hours = Number.IntegerDivide(totalSeconds, 3600),
+            remainingSeconds = Number.Mod(totalSeconds, 3600),
+            minutes = Number.IntegerDivide(remainingSeconds, 60),
+            seconds =Number.RoundUp(Number.Mod(remainingSeconds, 60),0)
+        in
+            Text.From(hours) & ":" & Text.From(minutes) & ":" & Text.From(seconds)
 
 
-## convert duration in Seconds to HH:MM:SS in DAX
+
+## DAX_convert duration in Seconds to HH:MM:SS in DAX
 
 VAR Duration = [Change this value to the name of your column that contains your seconds value]
 // There are 3,600 seconds in an hour
@@ -60,3 +71,7 @@ return
   vHours&" Hours & "&
   vRemainingMinutes&" Minutes & "& 
   vRemainingSeconds& " Seconds"
+## PQ Native Query -----------------------------------------------------------------------------------------------------
+Value. NativeQuery( AdventureWorksDWI, 
+"select * from pbi_internetsales" 
+null, [EnableFoIding=true])
