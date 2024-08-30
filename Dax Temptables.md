@@ -1,4 +1,4 @@
-## ---VALUES-------------------------------
+## VALUES  -------------------------------
 #----------------------------------------------------------------------------------VALUES-----------------------do not use in variables-------------------
 
 3 months rolling average=
@@ -10,7 +10,7 @@ calculate (
         values(date(month),totalsales),
         datesinperiod(date([date],startdate, -3,MONTH))
 
-## ---ADDCOLUMNS-----------------------------
+## ADDCOLUMNS     -----------------------------
 #--------------------------------------------------------------------------------ADDCOLUMNS--Add columns -- does not preserve data lineage----
 ADDCOLUMNS
 ---table
@@ -51,7 +51,7 @@ EVALUATE
 	)
 	ORDER BY DimShipDate[Year]
 
-# ---SELECTCOLUMNS---------------select columns iterator-------------maiontains data lineage
+# SELECTCOLUMNS---------------select columns iterator-------------maiontains data lineage
 
 
 
@@ -77,7 +77,7 @@ Calculatetable(
 ----------additional filters-------------------
 sales, [totalsalses]
 customer [maritalstatus]="s"
-# --- SUMMERIZE-----------addcol + summerize ------------better use summerizecolumns only for tables 
+# SUMMERIZE-----------addcol + summerize ------------better use summerizecolumns only for tables 
 sum
  SUMMERIZE(
 sales, 
@@ -105,7 +105,7 @@ EVALUATE
 	ORDER BY DimShipDate[Year]
 
 
-# ---SUMMERIZECOLUMNS--------------------< is only for queries and not to be used in a MEASURE---------------------
+# SUMMERIZECOLUMNS--------------------< is only for queries and not to be used in a MEASURE---------------------
 ---ability to group by --Rollup totals---
 --ability to add columns--like addcol
 --ability to add filters--like calculate table
@@ -127,7 +127,7 @@ SUMMARIZECOLUMNS(
 )
 ORDER by DimShipDate[Year]
 
-# ---GROUPCROSSAPLY-------------------
+# GROUPCROSSAPLY-------------------
 EVALUATE
 GROUPCROSSAPPLY(
 	DimShipDate[Year],
@@ -139,7 +139,7 @@ GROUPCROSSAPPLY(
 	"Minimum Price",[Min Price]
 )
 ORDER by DimShipDate[Year]
-# ----GROUPBY---------------------------------------------
+# GROUPBY---------------------------------------------
     EVALUATE
 GROUPBY(
 	FILTER(
