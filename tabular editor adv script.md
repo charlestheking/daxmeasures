@@ -1,4 +1,4 @@
-// Creates a SUM measure for every currently selected column and hide the column.
+## Creates a SUM measure for every currently selected column and hide the column.
 foreach(var c in Selected.Columns)
 {
     var newMeasure = c.Table.AddMeasure(
@@ -16,3 +16,4 @@ foreach(var c in Selected.Columns)
     // Hide the base column:
     c.IsHidden = true;
 }
+## calculation groups
