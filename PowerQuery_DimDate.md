@@ -1,4 +1,4 @@
-## ------REMOVE EMPTY DIM VALUES__visual level filter to remove empty dim values 
+### ------REMOVE EMPTY DIM VALUES__visual level filter to remove empty dim values 
    create a measure
   ###  INT(NOT(ISBLANK(TABLE)
      then use this measure to filter other tables
