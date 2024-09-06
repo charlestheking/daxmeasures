@@ -34,8 +34,8 @@ IF (
 )
 }
 /code
-###  --- Cascading filters --- 
-    INT(ISFILTERED(slicer[COL]) ---returns boolean use to filter the slicer
+###  --- Cascading filters 
+    #### INT(ISFILTERED(slicer[COL]) ---returns boolean use to filter the slicer
 
     
 #### --- add extracolumn to check if date is today-----
