@@ -32,4 +32,10 @@ IF (
     )
 )
 
-##
+###  --- Cascading filters --- 
+    INT(ISFILTERED(slicer[COL]) ---returns boolean use to filter the slicer
+
+    
+#### --- add extracolumn to check if date is today-----
+    DAX =>   IF(TD_DIM_DATE[D_DATE]= TODAY(), " TODAY ",TD_DIM_DATE[D_DATE]&"")
+    PQ  =>   Date.From([D_MNRG]) <= Date.From(DateTime.LocalNow())
