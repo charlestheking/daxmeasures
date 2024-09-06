@@ -1,6 +1,6 @@
 ### formating using Calculation groups 
   #### ---------------formats result of a measure in seconds to HHMMSS------------------------------------
-
+{
 Duration Format = 
 IF (
     ISBLANK ( SELECTEDMEASURE() ),
@@ -31,7 +31,7 @@ IF (
         SELECTEDMEASURE()
     )
 )
-
+}
 ###  --- Cascading filters --- 
     INT(ISFILTERED(slicer[COL]) ---returns boolean use to filter the slicer
 
