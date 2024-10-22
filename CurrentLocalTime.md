@@ -75,3 +75,7 @@ return
 Value. NativeQuery( AdventureWorksDWI, 
 "select * from pbi_internetsales" 
 null, [EnableFoIding=true])
+
+
+##  Dax format seconds into hh:nn:ss ---------------------------------------------------------------------------------------
+  Measure  =====> **format(time(0,0,,sum('table'[column in seconds])),"hh:**nn**:ss" )**
