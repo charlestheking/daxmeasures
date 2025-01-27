@@ -1,5 +1,5 @@
 ## VALUES  -------------------------------
-#----------------------------------------------------------------------------------VALUES-----------------------do not use in variables-------------------
+#----------------------------------------------------------------------------------**VALUES-----------------------do not use in variables--**-----------------
 
 3 months rolling average=
     var startdate = Lastdate(date[date])
@@ -11,7 +11,8 @@ calculate (
         datesinperiod(date([date],startdate, -3,MONTH))
 
 ## ADDCOLUMNS     -----------------------------
-#--------------------------------------------------------------------------------ADDCOLUMNS--Add columns -- does not preserve data lineage----
+#--------------------------------------------------------------------------------ADDCOLUMNS--Add columns 
+**-- does not preserve data lineage----**
 ADDCOLUMNS
 ---table
 --column to add 
@@ -20,7 +21,8 @@ ADDColumns (
 'Customer',
 "total Transact", calculate(countrows(sales)), ----------------------adds total count of customer transactions
 )
---Generate and row function-----------------generate a table----------
+
+**--Generate and row function-----------------generate a table----------**
 var custtbl = values(customer[Names])
 return
     GENERATE 
@@ -51,7 +53,7 @@ EVALUATE
 	)
 	ORDER BY DimShipDate[Year]
 
-# SELECTCOLUMNS---------------select columns iterator-------------maiontains data lineage
+## SELECTCOLUMNS---------------select columns iterator-------------maintains data lineage
 
 
 
@@ -77,14 +79,16 @@ Calculatetable(
 ----------additional filters-------------------
 sales, [totalsalses]
 customer [maritalstatus]="s"
-# SUMMERIZE-----------addcol + summerize ------------better use summerizecolumns only for tables 
+
+
+## SUMMERIZE-----------addcol + summerize ------------better use summerizecolumns only for tables 
 sum
  SUMMERIZE(
 sales, 
 product[color],
 "Sales" total sales /// not recommmended use summerizecolumns   
 
-
+------------------------------------------------------------------------------------------------------------
 EVALUATE
 	CALCULATETABLE(
 		SUMMARIZE(
@@ -105,12 +109,12 @@ EVALUATE
 	ORDER BY DimShipDate[Year]
 
 
-# SUMMERIZECOLUMNS--------------------< is only for queries and not to be used in a MEASURE---------------------
----ability to group by --Rollup totals---
+## SUMMERIZECOLUMNS--------------------< is only for queries and not to be used in a MEASURE---------------------
+--ability to group by --Rollup totals---
 --ability to add columns--like addcol
 --ability to add filters--like calculate table
----automatically remove row with blanks
---summerizecolumns will not work if the cntxt translation has occoured---------------------------do not use in a measure use addcol + summerize------------------------------------------------------<<<<<<<<<<<<
+--automatically remove row with blanks
+--summerizecolumns will not work if the cntxt translation has occoured---------------------------**do not use in a measure use addcol + summerize**------------------------------------------------------<<<<<<<<<<<<
     SUMMERIZECOLUMNS 
     product[class],
     'date'[year],
@@ -127,7 +131,9 @@ SUMMARIZECOLUMNS(
 )
 ORDER by DimShipDate[Year]
 
-# GROUPCROSSAPLY-------------------
+
+
+## GROUPCROSSAPLY-------------------
 EVALUATE
 GROUPCROSSAPPLY(
 	DimShipDate[Year],
@@ -139,7 +145,9 @@ GROUPCROSSAPPLY(
 	"Minimum Price",[Min Price]
 )
 ORDER by DimShipDate[Year]
-# GROUPBY---------------------------------------------
+
+
+## GROUPBY---------------------------------------------
     EVALUATE
 GROUPBY(
 	FILTER(
